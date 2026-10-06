@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "Responsible Graph Neural Networks for Structural Damage Detection in Smart Cities"
+authors:
+  - family-names: Kiruthika
+    given-names: K.
+    affiliation: "Karpagam Academy of Higher Education, Coimbatore, India"
+  - family-names: Sasirekha
+    given-names: S. P.
+    affiliation: "Karpagam Academy of Higher Education, Coimbatore, India"
+year: 2026
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/<org>/responsible-gnn-shm"
+preferred-citation:
+  type: article
+  title: "Responsible Graph Neural Networks for Structural Damage Detection in Smart Cities"
+  authors:
+    - family-names: Kiruthika
+      given-names: K.
+    - family-names: Sasirekha
+      given-names: S. P.
+  journal: "Discover Computing"
+  year: 2026

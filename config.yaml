@@ -1,0 +1,55 @@
+# Default configuration (Table 2 of the revised manuscript). All values are selected
+# on the validation split only; the test split is touched once, in run_all.py.
+data:
+  root: /data/s2ds                # path to the S2DS repository clone
+  image_size: 224
+  min_defect_fraction: 0.001      # a defect class is "present" if >=0.1% of pixels carry it
+  defect_classes: [1, 2, 3, 4, 5] # crack, spalling, corrosion, efflorescence, vegetation
+  ignore_classes: [6]             # control point
+  keep_original_split: true       # 563 / 87 / 93
+graph:
+  type: knn_cosine                # visual-similarity graph (see Sec. 3.1.2); not physical connectivity
+  k: 8
+  feature_source: imagenet_resnet18_gap   # frozen features, computed before training
+  inductive: true                 # test nodes attach to TRAIN nodes only; no test-test edges
+views:
+  T: 5                            # number of views per node (multi-view aggregation, Sec. 3.1.3)
+  mode: deterministic_multiscale  # 5 fixed crops/scales; NO real inspection sequence exists in S2DS
+model:
+  backbone: resnet18
+  pretrained: imagenet
+  proj_dim: 256
+  scales: [layer2, layer3, layer4]
+  temporal_kernel: 3
+  gnn: gcn
+  gnn_layers: 2
+  hidden: 128
+  dropout: 0.3
+  heads: 4                        # only for gat
+train:
+  batch_nodes: 16
+  lr: 0.001
+  weight_decay: 0.0001
+  epochs: 50
+  patience: 10
+  optimizer: adam
+ssl:
+  lambda_u: 0.5
+  conf_threshold: 0.95            # FixMatch-style confidence filtering
+  rampup_epochs: 10
+  label_fraction: 0.25            # fraction of TRAIN nodes with labels in the main experiment
+robust:
+  beta: 0.2
+  sigma_train: 0.05               # Gaussian std on [0,1] images used for the training-time L_rob
+uncertainty:
+  mc_samples: 20
+  tau: 0.5
+eval:
+  seeds: [0, 1, 2, 3, 4]
+  bootstrap: 1000
+  ece_bins: 15
+  corruptions:
+    gaussian_noise: [0.02, 0.05, 0.10]
+    gaussian_blur: [1.0, 2.0]
+    jpeg: [50, 30]
+    brightness: [-0.2, 0.2]
